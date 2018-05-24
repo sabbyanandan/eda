@@ -4,11 +4,11 @@ import java.time.Instant;
 
 public class UserNameChanged implements DomainEvent {
     private final String newNickName;
-    private final Instant when;
+    private final Instant occuredAt;
 
-    public UserNameChanged(String newNickName, Instant when) {
+    public UserNameChanged(String newNickName, Instant occuredAt) {
         this.newNickName = newNickName;
-        this.when = when;
+        this.occuredAt = occuredAt;
     }
 
     public String getNewNickName() {
@@ -16,7 +16,7 @@ public class UserNameChanged implements DomainEvent {
     }
 
     @Override
-    public Instant occuredAt() {
-        return when;
+    public Instant getOccuredAt() {
+        return occuredAt;
     }
 }

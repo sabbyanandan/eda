@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.Random;
 import java.util.UUID;
 
-
 @EnableScheduling
 @EnableBinding(Source.class)
 @SpringBootApplication
@@ -27,10 +26,12 @@ public class UserSourceApplication {
 	}
 
 	@Scheduled(fixedRate = 2000L)
-	public void randomUsers() {
+	public void randomUsers() throws InterruptedException {
 		User user = new User(UUID.randomUUID());
 		user.activate();
+		Thread.sleep(1200);
 		user.changeNicknameTo("Name" + new Random().nextInt(10));
+		Thread.sleep(1900);
 		user.deactivate();
 		userRepository.save(user);
 	}

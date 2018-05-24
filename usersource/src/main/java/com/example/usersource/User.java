@@ -3,7 +3,9 @@ package com.example.usersource;
 import com.google.common.collect.ImmutableList;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class User {
 
@@ -67,7 +69,7 @@ public class User {
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
-		userNameChanged(new UserNameChanged(newNickName, new Date()));
+		userNameChanged(new UserNameChanged(newNickName, Instant.now()));
 	}
 
 	private User userNameChanged(UserNameChanged userNameChanged) {

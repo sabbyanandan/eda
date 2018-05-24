@@ -1,9 +1,12 @@
-package com.example.usersource;
+package com.example.notificationsink;
 
 import java.time.Instant;
 
 public class UserDeactivated implements DomainEvent {
-    private final Instant occuredAt;
+    public UserDeactivated() {
+    }
+
+    private  Instant occuredAt;
 
     public UserDeactivated(Instant occuredAt) {
         this.occuredAt = occuredAt;

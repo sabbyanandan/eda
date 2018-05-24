@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.notificationsink;
 
 import java.time.Instant;
 

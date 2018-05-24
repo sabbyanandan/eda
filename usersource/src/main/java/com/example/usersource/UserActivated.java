@@ -3,14 +3,14 @@ package com.example.usersource;
 import java.time.Instant;
 
 public class UserActivated implements DomainEvent {
-    private final Instant when;
+    private final Instant occuredAt;
 
-    public UserActivated(Instant when) {
-        this.when = when;
+    public UserActivated(Instant occuredAt) {
+        this.occuredAt = occuredAt;
     }
 
     @Override
-    public Instant occuredAt() {
-        return when;
+    public Instant getOccuredAt() {
+        return occuredAt;
     }
 }
