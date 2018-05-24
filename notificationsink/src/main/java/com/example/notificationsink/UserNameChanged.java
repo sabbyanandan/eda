@@ -1,6 +1,6 @@
 package com.example.notificationsink;
 
-import java.time.Instant;
+import java.util.Date;
 
 public class UserNameChanged implements DomainEvent {
 
@@ -9,9 +9,9 @@ public class UserNameChanged implements DomainEvent {
 
 	private String newNickName;
 
-	private Instant occuredAt;
+	private Date occuredAt;
 
-	public UserNameChanged(String newNickName, Instant occuredAt) {
+	public UserNameChanged(String newNickName, Date occuredAt) {
 		this.newNickName = newNickName;
 		this.occuredAt = occuredAt;
 	}
@@ -21,7 +21,7 @@ public class UserNameChanged implements DomainEvent {
 	}
 
 	@Override
-	public Instant getOccuredAt() {
+	public Date getOccuredAt() {
 		return occuredAt;
 	}
 }

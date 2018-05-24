@@ -1,22 +1,27 @@
 package com.example.usersource;
 
-import java.time.Instant;
+import java.util.Date;
 
 public class UserNameChanged implements DomainEvent {
-    private final String newNickName;
-    private final Instant occuredAt;
 
-    public UserNameChanged(String newNickName, Instant occuredAt) {
-        this.newNickName = newNickName;
-        this.occuredAt = occuredAt;
-    }
+	public UserNameChanged() {
+	}
 
-    public String getNewNickName() {
-        return newNickName;
-    }
+	private String newNickName;
 
-    @Override
-    public Instant getOccuredAt() {
-        return occuredAt;
-    }
+	private Date occuredAt;
+
+	public UserNameChanged(String newNickName, Date occuredAt) {
+		this.newNickName = newNickName;
+		this.occuredAt = occuredAt;
+	}
+
+	public String getNewNickName() {
+		return newNickName;
+	}
+
+	@Override
+	public Date getOccuredAt() {
+		return occuredAt;
+	}
 }

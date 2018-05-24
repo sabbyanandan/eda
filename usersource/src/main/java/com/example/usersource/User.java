@@ -2,8 +2,8 @@ package com.example.usersource;
 
 import com.google.common.collect.ImmutableList;
 
-import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,10 +15,13 @@ public class User {
 
 	private UserState state = UserState.INITIALIZED;
 
+	private String region = "";
+
 	private List<DomainEvent> changes = new ArrayList<>();
 
-	public User(UUID uuid) {
+	public User(UUID uuid, String region) {
 		this.uuid = uuid;
+		this.region = region;
 	}
 
 	public UUID getUuid() {
@@ -29,21 +32,37 @@ public class User {
 		return nickname;
 	}
 
+	public String getRegion() {
+		return region;
+	}
+
 	public List<DomainEvent> getChanges() {
 		return ImmutableList.copyOf(changes);
 	}
 
 	enum UserState {
-		INITIALIZED, ACTIVATED, DEACTIVATED
-
+		INITIALIZED, CREATED, ACTIVATED, DEACTIVATED
 	}
 
-	void activate() { //behaviour
-		if (isActivated()) { //invariant
+	void create() { //behaviour
+		if (isCreated()) { //invariant
 			throw new IllegalStateException(); //NACK
 		}
 		//ACK
-		userActivated(new UserActivated(Instant.now()));
+		userCreated(new UserCreated(getUuid(), getRegion(), new Date()));
+	}
+
+	private User userCreated(UserCreated userCreated) {
+		state = UserState.CREATED; //state change
+		changes.add(userCreated);
+		return this;
+	}
+
+	void activate() {
+		if (isActivated()) {
+			throw new IllegalStateException();
+		}
+		userActivated(new UserActivated(new Date()));
 	}
 
 	private User userActivated(UserActivated userActivated) {
@@ -56,7 +75,7 @@ public class User {
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
-		userDeactivated(new UserDeactivated(Instant.now()));
+		userDeactivated(new UserDeactivated(new Date()));
 	}
 
 	private User userDeactivated(UserDeactivated userDeactivated) {
@@ -69,13 +88,17 @@ public class User {
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
-		userNameChanged(new UserNameChanged(newNickName, Instant.now()));
+		userNameChanged(new UserNameChanged(newNickName, new Date()));
 	}
 
 	private User userNameChanged(UserNameChanged userNameChanged) {
 		nickname = userNameChanged.getNewNickName();
 		changes.add(userNameChanged);
 		return this;
+	}
+
+	boolean isCreated() {
+		return state.equals(UserState.CREATED);
 	}
 
 	boolean isActivated() {

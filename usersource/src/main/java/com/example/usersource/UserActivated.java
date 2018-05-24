@@ -1,16 +1,20 @@
 package com.example.usersource;
 
-import java.time.Instant;
+import java.util.Date;
 
 public class UserActivated implements DomainEvent {
-    private final Instant occuredAt;
 
-    public UserActivated(Instant occuredAt) {
+    public UserActivated() {
+    }
+
+    private Date occuredAt;
+
+    public UserActivated(Date occuredAt) {
         this.occuredAt = occuredAt;
     }
 
     @Override
-    public Instant getOccuredAt() {
+    public Date getOccuredAt() {
         return occuredAt;
     }
 }

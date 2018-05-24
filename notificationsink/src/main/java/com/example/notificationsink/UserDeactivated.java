@@ -1,19 +1,20 @@
 package com.example.notificationsink;
 
-import java.time.Instant;
+import java.util.Date;
 
 public class UserDeactivated implements DomainEvent {
-    public UserDeactivated() {
-    }
 
-    private  Instant occuredAt;
+	public UserDeactivated() {
+	}
 
-    public UserDeactivated(Instant occuredAt) {
-        this.occuredAt = occuredAt;
-    }
+	private Date occuredAt;
 
-    @Override
-    public Instant getOccuredAt() {
-        return occuredAt;
-    }
+	public UserDeactivated(Date occuredAt) {
+		this.occuredAt = occuredAt;
+	}
+
+	@Override
+	public Date getOccuredAt() {
+		return occuredAt;
+	}
 }
