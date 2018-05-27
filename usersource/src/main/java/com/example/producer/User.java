@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.producer;
 
 import com.google.common.collect.ImmutableList;
 

@@ -1,4 +1,4 @@
-package com.example.notificationsink;
+package com.example.consumer;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
@@ -15,16 +15,16 @@ import org.springframework.messaging.handler.annotation.SendTo;
 
 @SpringBootApplication
 @EnableBinding(UserChannels.class)
-public class NotificationSinkApplication {
+public class Application {
 
 	private final CommandPublisher commandPublisher;
 
-	public NotificationSinkApplication(CommandPublisher commandPublisher) {
+	public Application(CommandPublisher commandPublisher) {
 		this.commandPublisher = commandPublisher;
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(NotificationSinkApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 	@StreamListener("users")
@@ -43,6 +43,8 @@ public class NotificationSinkApplication {
 		}
 		else if (event instanceof UserDeactivated) {
 			// more commands
+			// update audit service
+			// notiy report service
 		}
 	}
 
@@ -50,8 +52,7 @@ public class NotificationSinkApplication {
 	@SendTo("usersbyregion_output")
 	public KStream<Object, UsersByRegionCount> aggregateHandler(KStream<Object, DomainEvent> input) {
 
-		// find no. of users activated in the last 10s for the state of California
-
+		// find no. of new users created in the last 30s by region
 		return input.filter((k, v) -> v instanceof UserCreated)
 				.map((k, v) -> new KeyValue<>(((UserCreated) v).getRegion(), v))
 				.groupByKey(Serialized

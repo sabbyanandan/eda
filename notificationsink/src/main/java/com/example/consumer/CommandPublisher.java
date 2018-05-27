@@ -1,4 +1,4 @@
-package com.example.notificationsink;
+package com.example.consumer;
 
 import org.springframework.integration.annotation.Publisher;
 import org.springframework.stereotype.Component;

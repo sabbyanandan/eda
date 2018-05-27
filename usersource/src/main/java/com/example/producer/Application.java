@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.producer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,11 +15,11 @@ import java.util.UUID;
 @EnableScheduling
 @EnableBinding(Source.class)
 @SpringBootApplication
-public class UserSourceApplication {
+public class Application {
 
 	private final UserRepository userRepository;
 
-	public UserSourceApplication(UserRepository userRepository) {
+	public Application(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
@@ -27,7 +27,7 @@ public class UserSourceApplication {
 			.asList("US-CA", "US-NY", "US-PA", "US-IL", "US-CA", "US-NY", "US-HI", "US-CA", "US-NY", "US-CA", "US-NY");
 
 	public static void main(String[] args) {
-		SpringApplication.run(UserSourceApplication.class, args);
+		SpringApplication.run(Application.class, args);
 	}
 
 	@Scheduled(fixedRate = 500L)

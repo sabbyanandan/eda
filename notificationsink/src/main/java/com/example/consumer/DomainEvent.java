@@ -1,4 +1,4 @@
-package com.example.notificationsink;
+package com.example.consumer;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

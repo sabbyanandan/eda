@@ -1,4 +1,4 @@
-package com.example.notificationsink;
+package com.example.producer;
 
 import java.util.Date;
 

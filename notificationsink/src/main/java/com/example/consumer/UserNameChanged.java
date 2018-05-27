@@ -1,4 +1,4 @@
-package com.example.notificationsink;
+package com.example.consumer;
 
 import java.util.Date;
 

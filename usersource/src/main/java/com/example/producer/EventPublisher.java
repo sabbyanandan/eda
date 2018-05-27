@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.producer;
 
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.integration.annotation.Publisher;

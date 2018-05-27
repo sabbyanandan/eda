@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.producer;
 
 import java.util.Date;
 

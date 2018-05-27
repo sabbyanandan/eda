@@ -1,4 +1,4 @@
-package com.example.notificationsink;
+package com.example.consumer;
 
 public class UsersByRegionCount {
 	String region;

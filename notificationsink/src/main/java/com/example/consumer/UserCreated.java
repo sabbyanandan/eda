@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.consumer;
 
 import java.util.Date;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package com.example.usersource;
+package com.example.producer;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
