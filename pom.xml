@@ -9,8 +9,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>usersource</module>
-		<module>notificationsink</module>
+		<module>userproducer</module>
+		<module>userconsumer</module>
 	</modules>
 
 	<name>eda</name>
