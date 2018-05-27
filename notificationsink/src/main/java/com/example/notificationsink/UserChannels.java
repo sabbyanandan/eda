@@ -14,14 +14,17 @@ public interface UserChannels {
 	@Input("users")
 	SubscribableChannel users();
 
-	@Input("useraggregates")
-	KStream<?, ?> useraggregates();
+	@Input("usersbyregion_input")
+	KStream<?, ?> usersByRegionInput();
+
+	@Output("usersbyregion_output")
+	KStream<?, ?> usersByRegionOutput();
 
 	@Output("localevents")
-	MessageChannel localevents();
+	MessageChannel localEvents();
 
 	@Output("friendsnearby")
-	MessageChannel friendsnearby();
+	MessageChannel friendsNearby();
 
 	@Output("welcome")
 	MessageChannel welcome();

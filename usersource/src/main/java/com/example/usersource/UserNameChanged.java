@@ -7,17 +7,17 @@ public class UserNameChanged implements DomainEvent {
 	public UserNameChanged() {
 	}
 
-	private String newNickName;
+	private String newName;
 
 	private Date occuredAt;
 
-	public UserNameChanged(String newNickName, Date occuredAt) {
-		this.newNickName = newNickName;
+	public UserNameChanged(String newName, Date occuredAt) {
+		this.newName = newName;
 		this.occuredAt = occuredAt;
 	}
 
-	public String getNewNickName() {
-		return newNickName;
+	public String getNewName() {
+		return newName;
 	}
 
 	@Override

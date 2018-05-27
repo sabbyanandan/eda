@@ -3,13 +3,15 @@ package com.example.notificationsink;
 import org.springframework.integration.annotation.Publisher;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class CommandPublisher {
 
 	@Publisher(channel = "welcome")
-	public String sendWelcomeCommand(String command) {
-		System.out.println("welcome mssage sent!");
-		return command;
+	public UUID sendWelcomeCommand(UUID uuid) {
+		System.out.println("welcome message sent for: " + uuid + "!");
+		return uuid;
 	}
 
 	@Publisher(channel = "localevents")

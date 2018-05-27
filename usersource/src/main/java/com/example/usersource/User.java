@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public class User {
 
-	private String nickname = "";
+	private String name = "";
+
+	private String region = "";
 
 	private final UUID uuid;
 
 	private UserState state = UserState.INITIALIZED;
-
-	private String region = "";
 
 	private List<DomainEvent> changes = new ArrayList<>();
 
@@ -28,8 +28,8 @@ public class User {
 		return uuid;
 	}
 
-	String getNickname() {
-		return nickname;
+	public String getName() {
+		return name;
 	}
 
 	public String getRegion() {
@@ -84,15 +84,15 @@ public class User {
 		return this;
 	}
 
-	void changeNicknameTo(String newNickName) {
+	void changeNameTo(String name) {
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
-		userNameChanged(new UserNameChanged(newNickName, new Date()));
+		userNameChanged(new UserNameChanged(name, new Date()));
 	}
 
 	private User userNameChanged(UserNameChanged userNameChanged) {
-		nickname = userNameChanged.getNewNickName();
+		name = userNameChanged.getNewName();
 		changes.add(userNameChanged);
 		return this;
 	}

@@ -1,0 +1,82 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load('current', {
+            'packages': ['geochart'],
+            'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
+
+        function drawRegionsMap() {
+            var data = google.visualization.arrayToDataTable([
+                ['Region', 'User Count'],
+                ['US-CA', 0],
+                ['US-IL', 0],
+                ['US-PA', 0],
+                ['US-HI', 0],
+                ['US-NY', 0]
+//                ['US-NM', -6],
+//                ['US-NC', -7],
+//                ['US-ND', -8],
+//                ['US-OH', -9],
+//                ['US-OK', -10],
+//                ['US-OR', -11],
+//                ['US-MD', -12]
+            ]);
+
+            // Initial drawing
+            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+            chart.draw(data, {
+                width: 1500,
+                height: 1000,
+                region: "US",
+                resolution: "provinces",
+                easing: 'out',
+                startup: true,
+                datalessRegionColor: '#edf4b2',
+                colorAxis: {colors: ['#e7711c', '#4374e0']}
+            });
+
+            var ws = new WebSocket("ws://127.0.0.1:9292/websocket");
+            ws.onopen = function () {
+                console.log("Websocket connection open ...");
+            };
+            ws.onmessage = function (evt) {
+
+                var received_msg = JSON.parse(evt.data);
+                if (received_msg.region === 'US-CA') {
+                    data.setValue(0, 1, received_msg.count);
+                } else if (received_msg.region === 'US-IL') {
+                    data.setValue(1, 1, received_msg.count);
+                } else if (received_msg.region === 'US-PA') {
+                    data.setValue(2, 1, received_msg.count);
+                } else if (received_msg.region === 'US-HI') {
+                    data.setValue(3, 1, received_msg.count);
+                } else if (received_msg.region === 'US-NY') {
+                    data.setValue(4, 1, received_msg.count);
+                }
+                console.log("Region = " + received_msg.region);
+
+                //REDRAW again to update data in the map aka to see color changes
+                chart.draw(data, {
+                    width: 1500,
+                    height: 1000,
+                    region: "US",
+                    resolution: "provinces",
+                    easing: 'out',
+                    startup: true,
+                    datalessRegionColor: '#edf4b2',
+                    colorAxis: {colors: ['#e7711c', '#4374e0']}
+                });
+
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div id="regions_div" style="height: 500px; width: 900px"></div>
+</body>
+</html>
