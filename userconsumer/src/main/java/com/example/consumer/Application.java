@@ -17,6 +17,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 @EnableBinding(UserChannels.class)
 public class Application {
 
+	public static final int WINDOW_SIZE = 30000;
+
 	private final CommandPublisher commandPublisher;
 
 	public Application(CommandPublisher commandPublisher) {
@@ -57,13 +59,14 @@ public class Application {
 				.map((k, v) -> new KeyValue<>(((UserCreated) v).getRegion(), v))
 				.groupByKey(Serialized
 						.with(new Serdes.StringSerde(), new JsonSerde<>(DomainEvent.class)))
-				.windowedBy(TimeWindows.of(30000))
-				.count(Materialized.as("users-group-by-region"))
+				.windowedBy(TimeWindows.of(WINDOW_SIZE))
+				.count(Materialized.as("users-grouped-by-region-snapshot"))
 				.toStream()
 				.map((k, v) -> {
 					System.out
 							.println(
-									"In the last 30 secs, " + v + " new Users were CREATED in the " + k + " Region.");
+									"In the last" + WINDOW_SIZE + " secs, " + v + " new Users were CREATED in the " + k
+											+ " Region.");
 					return new KeyValue(null, new UsersByRegionCount(k.key(), v, k.window().start(), k.window().end()));
 				});
 	}

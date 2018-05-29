@@ -19,6 +19,8 @@ public class EventSourcedUserRepository implements UserRepository {
 	@Override
 	public User load() {
 
+		// Event sourcing!
+
 		// for each new USER object has a stream of events, they are ordered by timestamp; if we replay the events, we would eventually
 		// get to the current state of the object
 
