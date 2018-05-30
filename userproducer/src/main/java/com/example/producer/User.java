@@ -44,7 +44,7 @@ public class User {
 		INITIALIZED, CREATED, ACTIVATED, DEACTIVATED
 	}
 
-	void create() { //behaviour
+	void create() { //behavior
 		if (isCreated()) { //invariant
 			throw new IllegalStateException(); //NACK
 		}
@@ -53,12 +53,12 @@ public class User {
 	}
 
 	private User userCreated(UserCreated userCreated) {
-		state = UserState.CREATED; //state change
+		state = UserState.CREATED; //state transition
 		changes.add(userCreated);
 		return this;
 	}
 
-	void activate() { //behaviour
+	void activate() { //behavior
 		if (isActivated()) {
 			throw new IllegalStateException();
 		}
@@ -66,12 +66,12 @@ public class User {
 	}
 
 	private User userActivated(UserActivated userActivated) {
-		state = UserState.ACTIVATED; //state change
+		state = UserState.ACTIVATED; //state transition
 		changes.add(userActivated);
 		return this;
 	}
 
-	void deactivate() { //behaviour
+	void deactivate() { //behavior
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
@@ -79,12 +79,12 @@ public class User {
 	}
 
 	private User userDeactivated(UserDeactivated userDeactivated) {
-		state = UserState.DEACTIVATED; //state change
+		state = UserState.DEACTIVATED; //state transition
 		changes.add(userDeactivated);
 		return this;
 	}
 
-	void changeNameTo(String name) { //behaviour
+	void changeNameTo(String name) { //behavior
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}

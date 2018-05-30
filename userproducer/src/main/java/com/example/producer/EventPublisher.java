@@ -9,7 +9,7 @@ public class EventPublisher {
 
 	@Publisher(channel = Source.OUTPUT)
 	public DomainEvent sendEvent(DomainEvent event) {
-		System.out.println("about to sendEvent: " + event);
+		System.out.println("About to sendEvent: " + event);
 		return event;
 	}
 }
