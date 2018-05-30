@@ -58,7 +58,7 @@ public class User {
 		return this;
 	}
 
-	void activate() {
+	void activate() { //behaviour
 		if (isActivated()) {
 			throw new IllegalStateException();
 		}
@@ -71,7 +71,7 @@ public class User {
 		return this;
 	}
 
-	void deactivate() {
+	void deactivate() { //behaviour
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
@@ -79,12 +79,12 @@ public class User {
 	}
 
 	private User userDeactivated(UserDeactivated userDeactivated) {
-		state = UserState.DEACTIVATED;
+		state = UserState.DEACTIVATED; //state change
 		changes.add(userDeactivated);
 		return this;
 	}
 
-	void changeNameTo(String name) {
+	void changeNameTo(String name) { //behaviour
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}

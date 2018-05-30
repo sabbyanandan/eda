@@ -31,22 +31,19 @@ public class Application {
 
 	@StreamListener("users")
 	public void commandHandler(DomainEvent event) {
-		//		System.out.println(event);
-
 		if (event instanceof UserCreated) {
 			commandPublisher.sendWelcomeCommand(((UserCreated) event).getUuid());
 		}
 		else if (event instanceof UserActivated) {
-			// commandPublisher.sendLocalEventsCommand("localevents");
-			// commandPublisher.sendFriendsNearbyCommand("friendsnearby");
+			commandPublisher.sendLocalEventsCommand("localevents");
+			commandPublisher.sendFriendsNearbyCommand("friendsnearby");
 		}
 		else if (event instanceof UserNameChanged) {
-			// more commands
+			// push notification
 		}
 		else if (event instanceof UserDeactivated) {
-			// more commands
 			// update audit service
-			// notiy report service
+			// notify report service
 		}
 	}
 
@@ -54,7 +51,7 @@ public class Application {
 	@SendTo("usersbyregion_output")
 	public KStream<Object, UsersByRegionCount> aggregateHandler(KStream<Object, DomainEvent> input) {
 
-		// find no. of new users created in the last 30s by region
+		// find no. of new users grouped by region and in the last 30s
 		return input.filter((k, v) -> v instanceof UserCreated)
 				.map((k, v) -> new KeyValue<>(((UserCreated) v).getRegion(), v))
 				.groupByKey(Serialized

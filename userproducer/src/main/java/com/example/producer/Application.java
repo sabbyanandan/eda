@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @EnableScheduling
 @EnableBinding(Source.class)
@@ -38,19 +39,20 @@ public class Application {
 		// create
 		user.create();
 
-		//		// wait for a random sleep between 100ms -> 300ms
-		//		Thread.sleep(ThreadLocalRandom.current().nextInt(100, 300 + 1));
-		//
-		//		// activate
-		//		user.activate();
+		// wait for a random sleep between 100ms -> 300ms
+		Thread.sleep(ThreadLocalRandom.current().nextInt(100, 300 + 1));
 
-		//		// wait for a random sleep between 1s -> 3s
-		//		Thread.sleep(ThreadLocalRandom.current().nextInt(1000, 3000 + 1));
-		//
-		//		user.changeNicknameTo("Name - " + new Random().nextInt(100));
+		// activate
+		user.activate();
 
-		//		Thread.sleep(1900);
-		//		user.deactivate();
+		// wait for a random sleep between 100ms -> 300ms
+		Thread.sleep(ThreadLocalRandom.current().nextInt(100, 300 + 1));
+
+		// change name
+		user.changeNameTo("Name - " + new Random().nextInt(100));
+
+		//				Thread.sleep(1900);
+		//				user.deactivate();
 
 		userRepository.save(user);
 	}
