@@ -1,0 +1,62 @@
+= Stream Cloud Stream and Event Driven Architecture
+
+A social-network use-case built using Spring Cloud Stream, Apache Kafka, and Kafka Streams.
+
+The core of the use-case revolves around the https://github.com/sabbyanandan/eda/blob/master/userproducer/src/main/java/com/example/producer/User.java[`User`] aggregate.
+The commands and queries associated with the aggregate can be found in the domain class. Create, Activate, Name Change,
+and Deactivate are the events of this aggregate.
+
+NOTE: For a more detailed code walkthrough and design review, check out Kenny and Jakub's talk from
+https://content.pivotal.io/springone-platform-2017/state-or-events-which-shall-i-keep-jakub-pilimon-kenny-bastani-2[SprineOne-2017].
+
+Other parts of the sample:
+
+* A User generator (producer) - simulates creating, activating, and changing the name of the user on a random cadence. The changes are represented as `DomainEvent`s.
+* A User processor (consumer) - receives `DomainEvent` (exchange payload between the 2 bounded contexts) and it kicks-off downstream commands.
+* A KStream processor (consumer and producer) - performs a stateful operation to compute "count" on a number of users created on a tumbling 30s window.
+* An SPA - shows the user created activity on a map with real-time updates.
+
+== Build
+Clone repo and run the maven build.
+
+[source,bash,options=nowrap,subs=attributes]
+----
+mvn clean -U install
+----
+
+== Run
+
+1) Start Kafka 1.0 (and ZooKeeper)
+
+2) Start the consumer:
+
+[source,bash,options=nowrap,subs=attributes]
+----
+java -jar userconsumer/target/user-consumer-0.0.1-SNAPSHOT.jar
+----
+
+3) Start the websocket-sink:
+[source,bash,options=nowrap,subs=attributes]
+----
+java -jar websocket-sink-kafka-10-1.3.1.RELEASE.jar --spring.cloud.stream.bindings.input.destination=userscount --spring.cloud.stream.bindings.input.contentType=text/plain --spring.cloud.stream.bindings.input.consumer.headerMode=raw
+----
+
+4) Launch the UI:
+
+Copy file-path of https://github.com/sabbyanandan/eda/blob/master/userproducer/src/main/resources/static/users.html[`users.html`]
+from the cloned directory (eg: `file:///<FILE-PAHT>/eda/userproducer/src/main/resources/static/users.html`) and run it
+from the browser of your choice.
+
+5) Start the producer: _(yeah, last step, because it is easy on the eyes when reviewing the logs if all the consumers were
+started and running already)_
+
+[source,bash,options=nowrap,subs=attributes]
+----
+java -jar userproducer/target/user-producer-0.0.1-SNAPSHOT.jar
+----
+
+Once all the Apps are successfully started, look for the simulated user events logged in the user-producer and the events
+consumed by the user-consumer, in the respective consoles. The UI will update the map in real-time.
+
+
+
