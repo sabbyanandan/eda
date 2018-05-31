@@ -62,7 +62,7 @@ public class Application {
 				.map((k, v) -> {
 					System.out
 							.println(
-									"In the last" + WINDOW_SIZE + " secs, " + v + " new Users were CREATED in the " + k
+									"In the last" + WINDOW_SIZE + " ms, " + v + " new Users were CREATED in the " + k
 											+ " Region.");
 					return new KeyValue(null, new UsersByRegionCount(k.key(), v, k.window().start(), k.window().end()));
 				});
