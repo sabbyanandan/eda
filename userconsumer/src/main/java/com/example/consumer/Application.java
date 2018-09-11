@@ -2,10 +2,8 @@ package com.example.consumer;
 
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.Materialized;
-import org.apache.kafka.streams.kstream.Serialized;
-import org.apache.kafka.streams.kstream.TimeWindows;
+import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.state.KeyValueIterator;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyWindowStore;
 import org.apache.kafka.streams.state.WindowStoreIterator;
@@ -21,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -82,18 +82,20 @@ public class Application {
 	class InteractiveQueryController {
 
 		@RequestMapping("/windows")
-		public String windowedData(@RequestParam(value="region") String region) {
+		public List<UsersByRegionCount> windowedData() {
 
 			ReadOnlyWindowStore<String, Long> queryableStore = queryableStoreRegistry.getQueryableStoreType(USERS_GROUPED_BY_REGION_SNAPSHOT,
 					QueryableStoreTypes.windowStore());
 			long now = System.currentTimeMillis();
-			WindowStoreIterator<Long> regionCountIerator = queryableStore.fetch(region, now - (60 * 1000 * 5), now);
 
-			StringJoiner regionCounts = new StringJoiner(", ", "[", "]");
+			KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore.fetch("US-CA", "US-PA", now - (60 * 1000 * 5), now);
 
-			regionCountIerator.forEachRemaining(value -> regionCounts.add(String.valueOf(value.value)));
+			List<UsersByRegionCount> usersByRegionCounts = new ArrayList<>();
 
-			return regionCounts.toString();
+			regionCountIterator.forEachRemaining(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
+					value.value, value.key.window().start(), value.key.window().end())));
+
+			return usersByRegionCounts;
 		}
 
 		@RequestMapping("/windows/cumulative")
