@@ -19,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @SpringBootApplication
@@ -31,6 +29,8 @@ public class Application {
 	public static final int WINDOW_SIZE = 30000;
 
 	public static final String USERS_GROUPED_BY_REGION_SNAPSHOT = "users-grouped-by-region-snapshot";
+
+	public static final String[] REGIONS = new String[] {"US-CA", "US-HI", "US-IL", "US-NY", "US-PA"};
 
 	private final CommandPublisher commandPublisher;
 
@@ -86,13 +86,18 @@ public class Application {
 
 			ReadOnlyWindowStore<String, Long> queryableStore = queryableStoreRegistry.getQueryableStoreType(USERS_GROUPED_BY_REGION_SNAPSHOT,
 					QueryableStoreTypes.windowStore());
-			long now = System.currentTimeMillis();
 
+			long now = System.currentTimeMillis();
 			KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore.fetch("US-CA", "US-PA", now - (60 * 1000 * 5), now);
 
-			List<UsersByRegionCount> usersByRegionCounts = new ArrayList<>();
+			//Remove any duplicate windows for the purposes of UI
+			Set<KeyValue<Windowed<String>, Long>> windowedSet = new LinkedHashSet<>();
+			regionCountIterator.forEachRemaining(windowedSet::add);
+			regionCountIterator.close();
 
-			regionCountIterator.forEachRemaining(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
+			//Transform windows to a list of domain objects
+			List<UsersByRegionCount> usersByRegionCounts = new ArrayList<>();
+			windowedSet.forEach(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
 					value.value, value.key.window().start(), value.key.window().end())));
 
 			return usersByRegionCounts;
