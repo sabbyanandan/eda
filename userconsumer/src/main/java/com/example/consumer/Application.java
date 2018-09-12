@@ -89,7 +89,7 @@ public class Application {
 
 			if (queryableStore != null) {
 				long now = System.currentTimeMillis();
-				KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore.fetch("US-CA", "US-PA", now - (60 * 1000 * 5), now);
+				KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore.fetch("US-CA", "US-PA", now - (60 * 1000 * 2), now);
 
 				//Remove any duplicate windows for the purposes of UI
 				Set<KeyValue<Windowed<String>, Long>> windowedSet = new LinkedHashSet<>();
