@@ -1,0 +1,234 @@
+<html>
+<head>
+    <style>
+
+        .left {
+            overflow: hidden;
+            border: 2px dashed #f90;
+            width: 1200px;
+            min-height: 700px;
+            margin-left: 100px;
+            display: inline-block;
+        }
+
+        .right {
+            float: right;
+            width: 850px;
+            min-height: 100%;
+            margin-right: 100px;
+            border: 2px dashed #897;
+            overflow-y: hidden;
+        }
+
+        .bottom {
+            float: right;
+            width: 850px;
+            /*min-height: 1000px;*/
+            margin-right: 100px;
+            margin-top: 100px;
+            border: 2px dashed #840;
+        }
+    </style>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        google.charts.load('current', {
+            'packages': ['geochart'],
+            'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+        });
+        google.charts.setOnLoadCallback(drawRegionsMap);
+
+        function drawRegionsMap() {
+            var data = google.visualization.arrayToDataTable([
+                ['Region', 'User Count'],
+                ['US-CA', 0],
+                ['US-IL', 0],
+                ['US-PA', 0],
+                ['US-HI', 0],
+                ['US-NY', 0]
+            ]);
+
+            // Initial drawing
+            var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+            chart.draw(data, {
+                region: "US",
+                resolution: "provinces",
+                easing: 'out',
+                startup: true,
+                datalessRegionColor: '#edf4b2',
+                colorAxis: {colors: ['#e7711c', '#4374e0']}
+            });
+
+            var ws = new WebSocket("ws://127.0.0.1:9292/websocket");
+            ws.onopen = function () {
+                console.log("Websocket connection open - foo ...");
+            };
+            ws.onmessage = function (evt) {
+
+                var received_msg = JSON.parse(evt.data);
+                if (received_msg.region === 'US-CA') {
+                    data.setValue(0, 1, received_msg.count);
+                } else if (received_msg.region === 'US-IL') {
+                    data.setValue(1, 1, received_msg.count);
+                } else if (received_msg.region === 'US-PA') {
+                    data.setValue(2, 1, received_msg.count);
+                } else if (received_msg.region === 'US-HI') {
+                    data.setValue(3, 1, received_msg.count);
+                } else if (received_msg.region === 'US-NY') {
+                    data.setValue(4, 1, received_msg.count);
+                }
+                console.log("Region = " + received_msg.region);
+
+                //REDRAW again to update data in the map aka to see color changes
+                chart.draw(data, {
+                    region: "US",
+                    resolution: "provinces",
+                    easing: 'out',
+                    startup: true,
+                    datalessRegionColor: '#edf4b2',
+                    colorAxis: {colors: ['#e7711c', '#4374e0']}
+                });
+
+            }
+        }
+
+        // Timeline
+
+        google.charts.load("current", {packages: ["timeline"]});
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var container = document.getElementById('timeline_div');
+            var chart = new google.visualization.Timeline(container);
+
+            // first call
+            foo();
+
+            function foo() {
+
+                var dataTable = new google.visualization.DataTable();
+                dataTable.addColumn({type: 'string', id: 'Region'});
+                dataTable.addColumn({type: 'string', id: 'Count'});
+                dataTable.addColumn({type: 'datetime', id: 'Start'});
+                dataTable.addColumn({type: 'datetime', id: 'End'});
+
+                var jsonData = $.ajax({
+                    url: "http://localhost:8762/windows",
+                    dataType: "json",
+                    async: false
+                }).success(function () {
+                    setTimeout(function () {
+                        foo();
+                    }, 5000);
+                }).error(function () {
+                    console.log("no data!")
+                }).responseText;
+
+                if (jsonData != null) {
+                    var obj = JSON.parse(jsonData);
+
+                    for (var i in obj) {
+                        dataTable.addRows([
+                            [obj[i].region, obj[i].count.toString(), new Date(obj[i].start), new Date(obj[i].end)]
+                        ]);
+                    }
+
+                    var options = {
+                        timeline: {colorByRowLabel: true, groupByRowLabel: false},
+                        sortColumn: 0,
+                        'tooltip': {
+                            trigger: 'none'
+                        },
+
+                    };
+
+                    chart.draw(dataTable, options);
+                }
+            }
+        }
+
+        // Gauges
+
+        google.charts.load('current', {'packages': ['gauge']});
+        google.charts.setOnLoadCallback(drawGuages);
+
+        function drawGuages() {
+            var data = google.visualization.arrayToDataTable([
+                ['Sensor', 'Value'],
+                ['US-CA', 0],
+                ['US-IL', 0],
+                ['US-PA', 0],
+                ['US-HI', 0],
+                ['US-NY', 0]
+            ]);
+
+            var options = {
+                redFrom: 3000, redTo: 6000,
+                yellowFrom: 2000, yellowTo: 3000,
+                greenFrom: 0, greenTo: 2000,
+                minorTicks: 20,
+                max: 10000
+            };
+
+            // populate data
+            setInterval(function () {
+                populateTotalCountByRegion();
+            }, 5000);
+
+
+            var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+            chart.draw(data, options);
+
+            function populateTotalCountByRegion() {
+
+                var totalCount = $.ajax({
+                    url: "http://localhost:8762/windows/cumulative?region=US-CA",
+                    dataType: "json",
+                    async: false
+                }).responseText;
+                data.setValue(0, 1, totalCount);
+
+                totalCount = $.ajax({
+                    url: "http://localhost:8762/windows/cumulative?region=US-IL",
+                    dataType: "json",
+                    async: false
+                }).responseText;
+                data.setValue(1, 1, totalCount);
+
+                totalCount = $.ajax({
+                    url: "http://localhost:8762/windows/cumulative?region=US-PA",
+                    dataType: "json",
+                    async: false
+                }).responseText;
+                data.setValue(2, 1, totalCount);
+
+                totalCount = $.ajax({
+                    url: "http://localhost:8762/windows/cumulative?region=US-HI",
+                    dataType: "json",
+                    async: false
+                }).responseText;
+                data.setValue(3, 1, totalCount);
+
+                totalCount = $.ajax({
+                    url: "http://localhost:8762/windows/cumulative?region=US-NY",
+                    dataType: "json",
+                    async: false
+                }).responseText;
+                data.setValue(4, 1, totalCount);
+
+                // repaint!
+                chart.draw(data, options);
+            }
+        }
+
+    </script>
+</head>
+<body>
+
+<div id="regions_div" class="left"></div>
+<div id="timeline_div" class="right"></div>
+<div id="chart_div" class="bottom">
+
+</div>
+</body>
+</html>
