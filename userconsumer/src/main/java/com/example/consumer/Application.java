@@ -12,7 +12,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.binder.kafka.streams.QueryableStoreRegistry;
+import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +30,10 @@ public class Application {
 
 	public static final String USERS_GROUPED_BY_REGION_SNAPSHOT = "users-grouped-by-region-snapshot";
 
-	public static final String[] REGIONS = new String[] {"US-CA", "US-HI", "US-IL", "US-NY", "US-PA"};
-
 	private final CommandPublisher commandPublisher;
 
 	@Autowired
-	private QueryableStoreRegistry queryableStoreRegistry;
+	private InteractiveQueryService interactiveQueryService;
 
 	public Application(CommandPublisher commandPublisher) {
 		this.commandPublisher = commandPublisher;
@@ -84,7 +82,7 @@ public class Application {
 		@RequestMapping("/windows")
 		public List<UsersByRegionCount> windowedData() {
 
-			ReadOnlyWindowStore<String, Long> queryableStore = queryableStoreRegistry.getQueryableStoreType(USERS_GROUPED_BY_REGION_SNAPSHOT,
+			ReadOnlyWindowStore<String, Long> queryableStore = interactiveQueryService.getQueryableStore(USERS_GROUPED_BY_REGION_SNAPSHOT,
 					QueryableStoreTypes.windowStore());
 
 			long now = System.currentTimeMillis();
@@ -106,7 +104,7 @@ public class Application {
 		@RequestMapping("/windows/cumulative")
 		public long windowedCumulative(@RequestParam(value="region") String region) {
 
-			ReadOnlyWindowStore<String, Long> queryableStore = queryableStoreRegistry.getQueryableStoreType(USERS_GROUPED_BY_REGION_SNAPSHOT,
+			ReadOnlyWindowStore<String, Long> queryableStore = interactiveQueryService.getQueryableStore(USERS_GROUPED_BY_REGION_SNAPSHOT,
 					QueryableStoreTypes.windowStore());
 			long now = System.currentTimeMillis();
 			WindowStoreIterator<Long> regionCountIerator = queryableStore.fetch(region, now - (60 * 1000 * 60), now);
