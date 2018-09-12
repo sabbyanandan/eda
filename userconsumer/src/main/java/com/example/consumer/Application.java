@@ -85,19 +85,21 @@ public class Application {
 			ReadOnlyWindowStore<String, Long> queryableStore = interactiveQueryService.getQueryableStore(USERS_GROUPED_BY_REGION_SNAPSHOT,
 					QueryableStoreTypes.windowStore());
 
-			long now = System.currentTimeMillis();
-			KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore.fetch("US-CA", "US-PA", now - (60 * 1000 * 5), now);
-
-			//Remove any duplicate windows for the purposes of UI
-			Set<KeyValue<Windowed<String>, Long>> windowedSet = new LinkedHashSet<>();
-			regionCountIterator.forEachRemaining(windowedSet::add);
-			regionCountIterator.close();
-
-			//Transform windows to a list of domain objects
 			List<UsersByRegionCount> usersByRegionCounts = new ArrayList<>();
-			windowedSet.forEach(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
-					value.value, value.key.window().start(), value.key.window().end())));
 
+			if (queryableStore != null) {
+				long now = System.currentTimeMillis();
+				KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore.fetch("US-CA", "US-PA", now - (60 * 1000 * 5), now);
+
+				//Remove any duplicate windows for the purposes of UI
+				Set<KeyValue<Windowed<String>, Long>> windowedSet = new LinkedHashSet<>();
+				regionCountIterator.forEachRemaining(windowedSet::add);
+				regionCountIterator.close();
+
+				//Transform windows to a list of domain objects
+				windowedSet.forEach(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
+						value.value, value.key.window().start(), value.key.window().end())));
+			}
 			return usersByRegionCounts;
 		}
 
@@ -106,13 +108,12 @@ public class Application {
 
 			ReadOnlyWindowStore<String, Long> queryableStore = interactiveQueryService.getQueryableStore(USERS_GROUPED_BY_REGION_SNAPSHOT,
 					QueryableStoreTypes.windowStore());
-			long now = System.currentTimeMillis();
-			WindowStoreIterator<Long> regionCountIerator = queryableStore.fetch(region, now - (60 * 1000 * 60), now);
-
 			AtomicLong total = new AtomicLong(0);
-
-			regionCountIerator.forEachRemaining(value -> total.addAndGet(value.value));
-
+			if (queryableStore != null) {
+				long now = System.currentTimeMillis();
+				WindowStoreIterator<Long> regionCountIerator = queryableStore.fetch(region, now - (60 * 1000 * 60), now);
+				regionCountIerator.forEachRemaining(value -> total.addAndGet(value.value));
+			}
 			return total.get();
 		}
 
