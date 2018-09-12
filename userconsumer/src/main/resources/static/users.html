@@ -1,38 +1,61 @@
 <html>
 <head>
     <style>
+        @import "https://meyerweb.com/eric/tools/css/reset/reset.css";
 
-        .left {
-            overflow: hidden;
-            border: 2px dashed #f90;
-            width: 1200px;
-            min-height: 700px;
-            margin-left: 100px;
-            display: inline-block;
+        body {
+            background: white;
         }
 
-        .right {
-            float: right;
-            width: 850px;
-            min-height: 100%;
-            margin-right: 100px;
-            border: 2px dashed #897;
-            overflow-y: hidden;
+        .wrapper {
+            display: flex;
+            flex-flow: row wrap;
+            font-weight: bold;
+            text-align: center;
         }
 
-        .bottom {
-            float: right;
-            width: 850px;
-            /*min-height: 1000px;*/
-            margin-right: 100px;
-            margin-top: 100px;
-            border: 2px dashed #840;
+        .wrapper > * {
+            padding: 0;
+            flex: 1 100%;
+        }
+
+        .footer {
+            border-top: 1px solid #CCC;
+        }
+
+        .left, .right {
+            text-align: left;
+            min-height: 300px;
+        }
+
+        .content {
+            padding: 20px;
+            height: 880px;
+        }
+
+        .footer .content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .widget {
+            height: 880px;
+        }
+
+        @media all and (min-width: 1400px) {
+            .left, .right {
+                flex: 0 auto;
+                width: 50%;
+            }
+
+            .left .content {
+                border-right: 1px solid #CCC;
+            }
         }
     </style>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript">
-
         google.charts.load('current', {
             'packages': ['geochart'],
             'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
@@ -52,17 +75,17 @@
             // Initial drawing
             var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
             chart.draw(data, {
-                region: "US",
-                resolution: "provinces",
+                region: 'US',
+                resolution: 'provinces',
                 easing: 'out',
                 startup: true,
                 datalessRegionColor: '#edf4b2',
                 colorAxis: {colors: ['#e7711c', '#4374e0']}
             });
 
-            var ws = new WebSocket("ws://127.0.0.1:9292/websocket");
+            var ws = new WebSocket('ws://127.0.0.1:9292/websocket');
             ws.onopen = function () {
-                console.log("Websocket connection open - foo ...");
+                console.log('Websocket connection open - foo ...');
             };
             ws.onmessage = function (evt) {
 
@@ -78,12 +101,12 @@
                 } else if (received_msg.region === 'US-NY') {
                     data.setValue(4, 1, received_msg.count);
                 }
-                console.log("Region = " + received_msg.region);
+                console.log('Region = ' + received_msg.region);
 
                 //REDRAW again to update data in the map aka to see color changes
                 chart.draw(data, {
-                    region: "US",
-                    resolution: "provinces",
+                    region: 'US',
+                    resolution: 'provinces',
                     easing: 'out',
                     startup: true,
                     datalessRegionColor: '#edf4b2',
@@ -95,8 +118,9 @@
 
         // Timeline
 
-        google.charts.load("current", {packages: ["timeline"]});
+        google.charts.load('current', {packages: ['timeline']});
         google.charts.setOnLoadCallback(drawChart);
+
         function drawChart() {
             var container = document.getElementById('timeline_div');
             var chart = new google.visualization.Timeline(container);
@@ -113,15 +137,15 @@
                 dataTable.addColumn({type: 'datetime', id: 'End'});
 
                 var jsonData = $.ajax({
-                    url: "http://localhost:8762/windows",
-                    dataType: "json",
+                    url: 'http://localhost:8762/windows',
+                    dataType: 'json',
                     async: false
                 }).success(function () {
                     setTimeout(function () {
                         foo();
                     }, 5000);
                 }).error(function () {
-                    console.log("no data!")
+                    console.log('no data!')
                 }).responseText;
 
                 if (jsonData != null) {
@@ -182,36 +206,36 @@
             function populateTotalCountByRegion() {
 
                 var totalCount = $.ajax({
-                    url: "http://localhost:8762/windows/cumulative?region=US-CA",
-                    dataType: "json",
+                    url: 'http://localhost:8762/windows/cumulative?region=US-CA',
+                    dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(0, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: "http://localhost:8762/windows/cumulative?region=US-IL",
-                    dataType: "json",
+                    url: 'http://localhost:8762/windows/cumulative?region=US-IL',
+                    dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(1, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: "http://localhost:8762/windows/cumulative?region=US-PA",
-                    dataType: "json",
+                    url: 'http://localhost:8762/windows/cumulative?region=US-PA',
+                    dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(2, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: "http://localhost:8762/windows/cumulative?region=US-HI",
-                    dataType: "json",
+                    url: 'http://localhost:8762/windows/cumulative?region=US-HI',
+                    dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(3, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: "http://localhost:8762/windows/cumulative?region=US-NY",
-                    dataType: "json",
+                    url: 'http://localhost:8762/windows/cumulative?region=US-NY',
+                    dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(4, 1, totalCount);
@@ -220,15 +244,25 @@
                 chart.draw(data, options);
             }
         }
-
     </script>
 </head>
 <body>
-
-<div id="regions_div" class="left"></div>
-<div id="timeline_div" class="right"></div>
-<div id="chart_div" class="bottom">
-
+<div class="wrapper">
+    <div class="left">
+        <div class="content">
+            <div id="regions_div" class="widget"></div>
+        </div>
+    </div>
+    <div class="right">
+        <div class="content">
+            <div id="timeline_div" class="widget"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="content">
+            <div id="chart_div"></div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
