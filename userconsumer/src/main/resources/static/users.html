@@ -30,7 +30,13 @@
 
         .content {
             padding: 20px;
-            height: 880px;
+            height: 980px;
+        }
+
+        .heading {
+            padding: 30px;
+            text-align: center;
+            font-size: larger;
         }
 
         .footer .content {
@@ -250,16 +256,25 @@
 <div class="wrapper">
     <div class="left">
         <div class="content">
+            <div class="heading">
+                User activity by Region computed from real-time Events <i>(uses websockets)</i>
+            </div>
             <div id="regions_div" class="widget"></div>
         </div>
     </div>
     <div class="right">
         <div class="content">
+            <div class="heading">
+                User activity on a 30s moving-time-series window queried directly via Kafka Streams <i>(makes REST)</i>
+            </div>
             <div id="timeline_div" class="widget"></div>
         </div>
     </div>
     <div class="footer">
         <div class="content">
+            <div class="heading">
+                Total aggregated User activity queried directly via Kafka Streams
+            </div>
             <div id="chart_div"></div>
         </div>
     </div>
