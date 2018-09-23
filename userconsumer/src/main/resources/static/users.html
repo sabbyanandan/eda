@@ -89,7 +89,7 @@
                 colorAxis: {colors: ['#e7711c', '#4374e0']}
             });
 
-            var ws = new WebSocket('ws://127.0.0.1:9292/websocket');
+            var ws = new WebSocket('ws://35.196.62.72/websocket');
             ws.onopen = function () {
                 console.log('Websocket connection open - foo ...');
             };
@@ -143,7 +143,7 @@
                 dataTable.addColumn({type: 'datetime', id: 'End'});
 
                 var jsonData = $.ajax({
-                    url: 'http://localhost:8762/windows',
+                    url: 'http://35.231.187.123/windows',
                     dataType: 'json',
                     async: false
                 }).success(function () {
@@ -212,35 +212,35 @@
             function populateTotalCountByRegion() {
 
                 var totalCount = $.ajax({
-                    url: 'http://localhost:8762/windows/cumulative?region=US-CA',
+                    url: 'http://35.231.187.123/windows/cumulative?region=US-CA',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(0, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://localhost:8762/windows/cumulative?region=US-IL',
+                    url: 'http://35.231.187.123/windows/cumulative?region=US-IL',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(1, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://localhost:8762/windows/cumulative?region=US-PA',
+                    url: 'http://35.231.187.123/windows/cumulative?region=US-PA',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(2, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://localhost:8762/windows/cumulative?region=US-HI',
+                    url: 'http://35.231.187.123/windows/cumulative?region=US-HI',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(3, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://localhost:8762/windows/cumulative?region=US-NY',
+                    url: 'http://35.231.187.123/windows/cumulative?region=US-NY',
                     dataType: 'json',
                     async: false
                 }).responseText;
