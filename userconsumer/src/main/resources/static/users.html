@@ -62,6 +62,9 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript">
+
+        // Google Map Chart Begins
+
         google.charts.load('current', {
             'packages': ['geochart'],
             'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
@@ -89,9 +92,9 @@
                 colorAxis: {colors: ['#e7711c', '#4374e0']}
             });
 
-            var ws = new WebSocket('ws://35.196.62.72/websocket');
+            var ws = new WebSocket('ws://localhost:9292/websocket');
             ws.onopen = function () {
-                console.log('Websocket connection open - foo ...');
+                console.log('Websocket connection open and ready for data ...');
             };
             ws.onmessage = function (evt) {
 
@@ -122,7 +125,9 @@
             }
         }
 
-        // Timeline
+        // Google Map Chart Ends
+
+        // Time-series Chart Begins
 
         google.charts.load('current', {packages: ['timeline']});
         google.charts.setOnLoadCallback(drawChart);
@@ -143,7 +148,7 @@
                 dataTable.addColumn({type: 'datetime', id: 'End'});
 
                 var jsonData = $.ajax({
-                    url: 'http://35.231.187.123/windows',
+                    url: 'http://localhost:9002/windows',
                     dataType: 'json',
                     async: false
                 }).success(function () {
@@ -177,7 +182,9 @@
             }
         }
 
-        // Gauges
+        // Time-series Chart Ends
+
+        // Aggregated Gauge Chart Begins
 
         google.charts.load('current', {'packages': ['gauge']});
         google.charts.setOnLoadCallback(drawGuages);
@@ -193,9 +200,9 @@
             ]);
 
             var options = {
-                redFrom: 3000, redTo: 6000,
-                yellowFrom: 2000, yellowTo: 3000,
-                greenFrom: 0, greenTo: 2000,
+                redFrom: 6000, redTo: 10000,
+                yellowFrom: 1500, yellowTo: 6000,
+                greenFrom: 0, greenTo: 1500,
                 minorTicks: 20,
                 max: 10000
             };
@@ -209,38 +216,39 @@
             var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
             chart.draw(data, options);
 
-            function populateTotalCountByRegion() {
+            var cumulativeQueryURI = 'http://localhost:9002/windows/cumulative?region=';
 
+            function populateTotalCountByRegion() {
                 var totalCount = $.ajax({
-                    url: 'http://35.231.187.123/windows/cumulative?region=US-CA',
+                    url: cumulativeQueryURI + 'US-CA',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(0, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://35.231.187.123/windows/cumulative?region=US-IL',
+                    url: cumulativeQueryURI + 'US-IL',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(1, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://35.231.187.123/windows/cumulative?region=US-PA',
+                    url: cumulativeQueryURI + 'US-PA',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(2, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://35.231.187.123/windows/cumulative?region=US-HI',
+                    url: cumulativeQueryURI + 'US-HI',
                     dataType: 'json',
                     async: false
                 }).responseText;
                 data.setValue(3, 1, totalCount);
 
                 totalCount = $.ajax({
-                    url: 'http://35.231.187.123/windows/cumulative?region=US-NY',
+                    url: cumulativeQueryURI + 'US-NY',
                     dataType: 'json',
                     async: false
                 }).responseText;
@@ -250,6 +258,9 @@
                 chart.draw(data, options);
             }
         }
+
+        // Aggregated Gauge Chart Ends
+
     </script>
 </head>
 <body>
@@ -257,7 +268,7 @@
     <div class="left">
         <div class="content">
             <div class="heading">
-                User activity by Region computed from real-time Events <i>(uses websockets)</i>
+                'User' activity by Region <i>(via websockets)</i>
             </div>
             <div id="regions_div" class="widget"></div>
         </div>
@@ -265,7 +276,7 @@
     <div class="right">
         <div class="content">
             <div class="heading">
-                User activity on a 30s moving-time-series window queried directly via Kafka Streams <i>(makes REST)</i>
+                'User' activity on a 30s moving-time-series window <i>(via async REST)</i>
             </div>
             <div id="timeline_div" class="widget"></div>
         </div>
@@ -273,7 +284,7 @@
     <div class="footer">
         <div class="content">
             <div class="heading">
-                Total aggregated User activity queried directly via Kafka Streams
+                Total aggregated 'User' activity <i>(via async REST)</i>
             </div>
             <div id="chart_div"></div>
         </div>

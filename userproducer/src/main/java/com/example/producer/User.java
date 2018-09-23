@@ -66,7 +66,7 @@ public class User {
 	}
 
 	private User userActivated(UserActivated userActivated) {
-		state = UserState.ACTIVATED; //state transistion
+		state = UserState.ACTIVATED; //state transition
 		changes.add(userActivated);
 		return this;
 	}
@@ -79,7 +79,7 @@ public class User {
 	}
 
 	private User userDeactivated(UserDeactivated userDeactivated) {
-		state = UserState.DEACTIVATED; //state transistion
+		state = UserState.DEACTIVATED; //state transition
 		changes.add(userDeactivated);
 		return this;
 	}

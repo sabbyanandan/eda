@@ -39,24 +39,24 @@ public class Application {
 
 		User user = new User(UUID.randomUUID(), regions.get(new Random().nextInt(regions.size())));
 
-		// event-1: create
+		// event-1: create user
 		user.create();
 
 		// wait for a random sleep between 100ms -> 300ms
 		Thread.sleep(ThreadLocalRandom.current().nextInt(100, 300 + 1));
 
-		// event-2: activate
+		// event-2: activate user
 		user.activate();
 
 		// wait for a random sleep between 100ms -> 300ms
 		Thread.sleep(ThreadLocalRandom.current().nextInt(100, 300 + 1));
 
-		// event-3: change name
+		// event-3: change name of the user
 		user.changeNameTo("Name - " + new Random().nextInt(100));
 
 		// Thread.sleep(1900);
 
-		// event-4: deactivate
+		// event-4: deactivate user
 		// user.deactivate();
 
 		userRepository.save(user);

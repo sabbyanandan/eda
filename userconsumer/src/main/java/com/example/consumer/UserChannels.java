@@ -11,6 +11,9 @@ public interface UserChannels {
 	@Input("users")
 	SubscribableChannel users();
 
+	@Input("usersbyregion_input")
+	KStream<?, ?> usersByRegionInput();
+
 	@Output("welcome")
 	MessageChannel welcome();
 
@@ -19,9 +22,6 @@ public interface UserChannels {
 
 	@Output("friendsnearby")
 	MessageChannel friendsNearby();
-
-	@Input("usersbyregion_input")
-	KStream<?, ?> usersByRegionInput();
 
 	@Output("usersbyregion_output")
 	KStream<?, ?> usersByRegionOutput();

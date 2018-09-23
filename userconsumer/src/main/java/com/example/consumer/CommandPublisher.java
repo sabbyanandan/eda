@@ -10,19 +10,19 @@ public class CommandPublisher {
 
 	@Publisher(channel = "welcome")
 	public UUID sendWelcomeCommand(UUID uuid) {
-		System.out.println("Welcome message sent for: " + uuid + "!");
+		System.out.println("Welcome message sent for [" + uuid + "] User.");
 		return uuid;
 	}
 
 	@Publisher(channel = "localevents")
 	public String sendLocalEventsCommand(String command) {
-		System.out.println("Trigger [" + command + "] command to initiate Local Events nearby service.");
+		System.out.println("Publish [" + command + "] command to initiate local events nearby service.");
 		return command;
 	}
 
 	@Publisher(channel = "friendsnearby")
 	public String sendFriendsNearbyCommand(String command) {
-		System.out.println("Trigger [" + command + "] command to initiate with Friends nearby service.");
+		System.out.println("Publish [" + command + "] command to initiate split fare between friends.");
 		return command;
 	}
 }

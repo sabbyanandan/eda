@@ -1,4 +1,4 @@
-package com.example.consumer;
+package com.example.producer;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class NotificationsinkApplicationTests {
+public class UserProducerApplicationTests {
 
 	@Test
 	public void contextLoads() {

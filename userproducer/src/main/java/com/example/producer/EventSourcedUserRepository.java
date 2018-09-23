@@ -13,6 +13,7 @@ public class EventSourcedUserRepository implements UserRepository {
 
 	@Override
 	public void save(User user) {
+		// Persist events as change logs
 		user.getChanges().forEach(eventPublisher::sendEvent);
 	}
 
@@ -21,7 +22,7 @@ public class EventSourcedUserRepository implements UserRepository {
 
 		// Event sourcing!
 
-		// for each new USER object has a stream of events, they are ordered by timestamp; if we replay the events, we would eventually
+		// Each new USER object has a stream of events, they are ordered by timestamp; if we replay the events, we would eventually
 		// get to the current state of the object
 
 		// you can recreate state from 1 month ago or a year ago!
