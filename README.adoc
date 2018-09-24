@@ -1,62 +1,68 @@
-= Stream Cloud Stream and Event Driven Architecture
+= Building Cloud-Native Data-Intensive Applications with Spring
 
-A social-network use-case built using Spring Cloud Stream, Apache Kafka, and Kafka Streams.
+A use-case demonstration of data-intensive applications built using Spring Cloud Stream, Apache Kafka, and Kafka Streams.
 
-The core of the use-case revolves around the https://github.com/sabbyanandan/eda/blob/master/userproducer/src/main/java/com/example/producer/User.java[`User`] aggregate.
-The commands and queries associated with the aggregate can be found in the domain class. Create, Activate, Name Change,
-and Deactivate are the events of this aggregate.
+The use-case revolves around the https://github.com/sabbyanandan/eda/blob/master/userproducer/src/main/java/com/example/producer/User.java[`User`]
+domain object. In https://en.wikipedia.org/wiki/Domain-driven_design[Domain Driven Design] terms, it is the https://martinfowler.com/bliki/DDD_Aggregate.html[Aggregate]
+for this use-case.
 
-NOTE: For a more detailed code walkthrough and design review, check out Kenny and Jakub's talk from
-https://content.pivotal.io/springone-platform-2017/state-or-events-which-shall-i-keep-jakub-pilimon-kenny-bastani-2[SprineOne-2017].
+The commands and queries for the aggregate can be found in the domain class. Create, Activate, Name Change,
+and Deactivate are the behaviors of this aggregate.
 
-Other parts of the sample:
+NOTE: This demonstration builds upon the literature from Kenny and Jakub's
+https://content.pivotal.io/springone-platform-2017/state-or-events-which-shall-i-keep-jakub-pilimon-kenny-bastani-2[SprineOne-2017]
+presentation.
 
-* A User generator (producer) - simulates creating, activating, and changing the name of the user on a random cadence. The changes are represented as `DomainEvent`s.
-* A User processor (consumer) - receives `DomainEvent` (exchange payload between the 2 bounded contexts) and it kicks-off downstream commands.
-* A KStream processor (consumer and producer) - performs a stateful operation to compute "count" on a number of users created on a tumbling 30s window.
-* An SPA - shows the user created activity on a map with real-time updates.
+Projects included in the demo:
 
-== Build
-Clone repo and run the maven build.
+* https://github.com/sabbyanandan/eda/tree/master/userproducer[userproducer]: A Spring Cloud Stream "producer" App that
+generates new users and it updates the aggregate state on a random frequency. Each payload is represented as `DomainEvent`.
+* https://github.com/sabbyanandan/eda/tree/master/userconsumer[userconsumer]: A Spring Cloud Stream "consumer" App that
+interacts with `DomainEvent` (payload exchanged between two bounded contexts).
+** The App includes multiple `@StreamListener` functions. One consumes new payloads, and in turn, it triggers downstream
+events and the other interacts with `KStream` APIs to perform stateful operations.
+** The App also includes a `@RestController` to interact with `KStream` events through `KTable` via `InteractiveQueries`.
+** A single-page-application presents the real-time events using Google Maps, Timeline, and Gauge charts.
+
+== Run it Locally
+Clone the repo and run the Maven build.
 
 [source,bash,options=nowrap,subs=attributes]
 ----
 mvn clean -U install
 ----
 
-== Run
+=== Steps
 
-1) Start Kafka 1.0 (and ZooKeeper)
+1) Start Kafka 2.0 (and ZooKeeper)
 
-2) Start the consumer:
+2) Start the `userconsumer` App:
 
 [source,bash,options=nowrap,subs=attributes]
 ----
-java -jar userconsumer/target/user-consumer-0.0.1-SNAPSHOT.jar
+java -jar userconsumer/target/user-consumer-0.0.1-SNAPSHOT.jar --server.port=9002
 ----
 
-3) Start the websocket-sink:
+3) Download the http://repo.spring.io/release/org/springframework/cloud/stream/app/websocket-sink-kafka-10/1.3.1.RELEASE/websocket-sink-kafka-10-1.3.1.RELEASE.jar[Websocket-sink]
+and stat the websocket-sink App:
 [source,bash,options=nowrap,subs=attributes]
 ----
 java -jar websocket-sink-kafka-10-1.3.1.RELEASE.jar --spring.cloud.stream.bindings.input.destination=userscount --spring.cloud.stream.bindings.input.contentType=text/plain --spring.cloud.stream.bindings.input.consumer.headerMode=raw
 ----
 
-4) Launch the UI:
+4) Launch the single-page-application at: http://localhost:9002/users.html
 
-Copy file-path of https://github.com/sabbyanandan/eda/blob/master/userproducer/src/main/resources/static/users.html[`users.html`]
-from the cloned directory (eg: `file:///<FILE-PAHT>/eda/userproducer/src/main/resources/static/users.html`) and run it
-from the browser of your choice.
 
-5) Start the producer: _(yeah, last step, because it is easy on the eyes when reviewing the logs if all the consumers were
-started and running already)_
+5) Start the `userproducer` App: _(yeah, as the last step, because it is better to have consumers started and ready so it
+will be easy to reason through when new events arrive from the producer)_
 
 [source,bash,options=nowrap,subs=attributes]
 ----
-java -jar userproducer/target/user-producer-0.0.1-SNAPSHOT.jar
+java -jar userproducer/target/user-producer-0.0.1-SNAPSHOT.jar --server.port=9001
 ----
 
-Once all the Apps are successfully started, look for the simulated user events logged in the user-producer and the events
-consumed by the user-consumer, in the respective consoles. The UI will update the map in real-time.
+As soon as `userproducer` starts to generate new users, all the new events will go through Kafka, and they will be consumed
+automatically by the `userconsumer` App. The UI will update the map, timeline, and gauge charts in real-time.
 
 
 

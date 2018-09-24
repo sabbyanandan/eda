@@ -45,10 +45,10 @@ public class User {
 	}
 
 	void create() { //behavior
-		if (isCreated()) { //invariant
-			throw new IllegalStateException(); //NACK
+		if (isCreated()) {
+			throw new IllegalStateException();
 		}
-		//ACK
+
 		userCreated(new UserCreated(getUuid(), getRegion(), new Date()));
 	}
 
@@ -58,7 +58,7 @@ public class User {
 		return this;
 	}
 
-	void activate() { //behavior
+	void activate() {
 		if (isActivated()) {
 			throw new IllegalStateException();
 		}
@@ -71,7 +71,7 @@ public class User {
 		return this;
 	}
 
-	void deactivate() { //behavior
+	void deactivate() {
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
@@ -84,7 +84,7 @@ public class User {
 		return this;
 	}
 
-	void changeNameTo(String name) { //behavior
+	void changeNameTo(String name) {
 		if (isDeactivated()) {
 			throw new IllegalStateException();
 		}
