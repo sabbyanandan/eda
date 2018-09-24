@@ -64,5 +64,44 @@ java -jar userproducer/target/user-producer-0.0.1-SNAPSHOT.jar --server.port=900
 As soon as `userproducer` starts to generate new users, all the new events will go through Kafka, and they will be consumed
 automatically by the `userconsumer` App. The UI will update the map, timeline, and gauge charts in real-time.
 
+== Run it on Kubernetes
+
+The same set of applications can be deployed on Kubernetes. Spring Cloud Data Flow (SCDF) exactly helps us with
+the orchestration and deployment needs. It is much simpler to deploy it as a stream im SCDF, so there's the opportunity to
+centrally manage, visualize, and monitor all the moving pieces.
+
+=== Prerequisites
+
+1) A Kubernetes cluster (1.9.x or later).
+
+2) Helm install https://hub.kubeapps.com/charts/incubator/spring-cloud-data-flow[Spring Cloud Data Flow].
+
+3) Create a Websocket and Consumer LoadBalancer.
+
+=== Steps
+
+1) Clone the repo, run the Maven build, and generate Docker images.
+
+[source,bash,options=nowrap,subs=attributes]
+----
+mvn package dockerfile:build -pl userproducer
+mvn package dockerfile:build -pl userconsumer
+----
+
+2) Publish the Docker images to Docker Hub.
+
+[source,bash,options=nowrap,subs=attributes]
+----
+docker push <your-docker-hub-account>/user-producer:0.0.1-SNAPSHOT
+docker push <your-docker-hub-account>/user-consumer:0.0.1-SNAPSHOT
+----
+
+3) Register the Apps in SCDF.
+
+4) Create and deploy the following stream.
+
+5) Confirm deployment and verify that the pods are up and running.
+
+4) Launch the single-page-application at: http://<CONSUMER_LB_HOST>/users.html
 
 
