@@ -33,14 +33,8 @@ public class Application {
 
 	public static final String USERS_GROUPED_BY_REGION_SNAPSHOT = "users-grouped-by-region-snapshot";
 
-	private final CommandPublisher commandPublisher;
-
 	@Autowired
 	private InteractiveQueryService interactiveQueryService;
-
-	public Application(CommandPublisher commandPublisher) {
-		this.commandPublisher = commandPublisher;
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -106,25 +100,5 @@ public class Application {
 			}
 			return total.get();
 		}
-
 	}
-
-	@StreamListener("users")
-	public void commandHandler(DomainEvent event) {
-		if (event instanceof UserCreated) {
-			commandPublisher.sendWelcomeCommand(((UserCreated) event).getUuid());
-		}
-		else if (event instanceof UserActivated) {
-			commandPublisher.sendLocalEventsCommand("localevents");
-			commandPublisher.sendFriendsNearbyCommand("friendsnearby");
-		}
-		else if (event instanceof UserNameChanged) {
-			// push notification
-		}
-		else if (event instanceof UserDeactivated) {
-			// update audit service
-			// notify report service
-		}
-	}
-
 }

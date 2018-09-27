@@ -14,9 +14,9 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+@EnableBinding(Source.class)
 @EnableScheduling
 @EnablePublisher
-@EnableBinding(Source.class)
 @SpringBootApplication
 public class Application {
 
@@ -34,7 +34,7 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Scheduled(fixedRate = 500L)
+	@Scheduled(fixedRate = 100L)
 	public void randomUsers() throws InterruptedException {
 
 		User user = new User(UUID.randomUUID(), regions.get(new Random().nextInt(regions.size())));
@@ -53,11 +53,6 @@ public class Application {
 
 		// event-3: change name of the user
 		user.changeNameTo("Name - " + new Random().nextInt(100));
-
-		// Thread.sleep(1900);
-
-		// event-4: deactivate user
-		// user.deactivate();
 
 		userRepository.save(user);
 	}
