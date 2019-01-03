@@ -44,7 +44,7 @@ public class Application {
 	@SendTo("usersbyregion_output")
 	public KStream<Object, UsersByRegionCount> aggregateHandler(KStream<Object, DomainEvent> input) {
 
-		// find no. of new users grouped by region and in the last 30s
+		// Find no. of new users grouped by region and in the last 30s
 		return input.filter((k, v) -> v instanceof UserCreated)
 				.map((k, v) -> new KeyValue<>(((UserCreated) v).getRegion(), v))
 				.groupByKey(Serialized
@@ -70,15 +70,16 @@ public class Application {
 
 			if (queryableStore != null) {
 				long now = System.currentTimeMillis();
+				// Retrieve the last 2-minutes worth of state
 				KeyValueIterator<Windowed<String>, Long> regionCountIterator = queryableStore
 						.fetch("US-CA", "US-PA", now - (60 * 1000 * 2), now);
 
-				//Remove any duplicate windows for the purposes of UI
+				// Remove any duplicate windows for the purposes of UI
 				Set<KeyValue<Windowed<String>, Long>> windowedSet = new LinkedHashSet<>();
 				regionCountIterator.forEachRemaining(windowedSet::add);
 				regionCountIterator.close();
 
-				//Transform windows to a list of domain objects
+				// Transform windows to a list of domain objects
 				windowedSet.forEach(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
 						value.value, value.key.window().start(), value.key.window().end())));
 			}
@@ -94,6 +95,7 @@ public class Application {
 			AtomicLong total = new AtomicLong(0);
 			if (queryableStore != null) {
 				long now = System.currentTimeMillis();
+				// Retrieve the last 1-hour worth of state
 				WindowStoreIterator<Long> regionCountIerator = queryableStore
 						.fetch(region, now - (60 * 1000 * 60), now);
 				regionCountIerator.forEachRemaining(value -> total.addAndGet(value.value));
