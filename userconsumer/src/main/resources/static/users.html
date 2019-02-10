@@ -92,7 +92,7 @@
                 colorAxis: {colors: ['#e7711c', '#4374e0']}
             });
 
-            var ws = new WebSocket('ws://localhost:9292/websocket');
+            var ws = new WebSocket('ws://35.247.86.40/websocket');
             ws.onopen = function () {
                 console.log('Websocket connection open and ready for data ...');
             };
@@ -148,7 +148,7 @@
                 dataTable.addColumn({type: 'datetime', id: 'End'});
 
                 var jsonData = $.ajax({
-                    url: 'http://localhost:9002/windows',
+                    url: 'http://35.247.120.166/windows',
                     dataType: 'json',
                     async: false
                 }).success(function () {
@@ -216,7 +216,7 @@
             var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
             chart.draw(data, options);
 
-            var cumulativeQueryURI = 'http://localhost:9002/windows/cumulative?region=';
+            var cumulativeQueryURI = 'http://35.247.120.166/windows/cumulative?region=';
 
             function populateTotalCountByRegion() {
                 var totalCount = $.ajax({
