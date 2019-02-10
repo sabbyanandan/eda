@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 @SpringBootApplication
@@ -82,6 +79,8 @@ public class Application {
 				// Transform windows to a list of domain objects
 				windowedSet.forEach(value -> usersByRegionCounts.add(new UsersByRegionCount(value.key.key(),
 						value.value, value.key.window().start(), value.key.window().end())));
+
+				usersByRegionCounts.sort(Comparator.comparingLong(o -> o.start));
 			}
 			return usersByRegionCounts;
 		}
