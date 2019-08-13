@@ -52,6 +52,10 @@
             <groupId>org.springframework.cloud.stream.app</groupId>
             <artifactId>app-starters-micrometer-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud.stream.app</groupId>
+            <artifactId>app-starters-security-common</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
